@@ -1,0 +1,20 @@
+{
+  "name": "conficurse",
+  "version": "0.0.1",
+  "description": "Recursively converts YAML config files into Javascript objects",
+  "main": "conficurse.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "author": "Vidar",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^23.5.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.12.0"
+  }
+}
