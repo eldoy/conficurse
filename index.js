@@ -82,7 +82,7 @@ loader.load = (path) => {
       c[name] = loader.file(file, ext)
     }
   }
-  build(loader.abs(path), config, true)
+  build(loader.abs(path), config)
 
   // Remove the root before return
   return config[Object.keys(config)[0]]
