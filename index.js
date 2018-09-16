@@ -14,86 +14,78 @@ loader.split = (path) => {
   return p.basename(path).split('.')
 }
 
-// Load file if it exists
-loader.file = (path) => {
-  if (fs.existsSync(path)) {
-    return fs.readFileSync(path, 'utf8')
+// Load file
+loader.file = (path, ext = 'yml') => {
+  let data = loader.read(path)
+  switch (ext) {
+    case 'yml': data = loader.yaml(path); break
+    case 'json': data = JSON.parse(data)
   }
-  return null
+  loader.merge(path, ext, data)
+  return data
 }
 
-loader.dir = (path) => {
-  return fs.readdirSync(path)
-}
-
-loader.isdir = (path) => {
-  return fs.lstatSync(path).isDirectory()
-}
-
-loader.env = (path, ext = 'yml') => {
-  const mode = process.env.NODE_ENV
-  if (mode) {
-    return path.replace(`.${ext}`, `.${mode}.${ext}`)
-  }
-}
-
+// Check if file exists
 loader.exist = (path) => {
   return path ? fs.existsSync(path) : false
 }
 
-// Load yml
-loader.yaml = (path) => {
-  const obj = yaml.load(loader.file(path))
-  const base = loader.env(path)
-  if (loader.exist(base)) {
-    _.merge(obj, yaml.load(loader.file(base)))
-  }
-  return obj
+// Read file
+loader.read = (path) => {
+  return fs.readFileSync(path, 'utf8')
 }
 
-// Load yaml file
-loader.load = (path) => {
-  const config = {}
+// Load yml
+loader.yaml = (path) => {
+  return yaml.load(loader.read(path))
+}
 
-  // Base dir
-  const base = loader.abs(path)
+// Read directory
+loader.dir = (path) => {
+  return fs.readdirSync(path).map(x => `${path}/${x}`)
+}
 
-  if (loader.exist(base)) {
-    for (const f of loader.dir(base)) {
-      // Extract name and extension, set path
-      const [name, ext] = f.split('.')
-      const path = `${base}/${f}`
+// Is directory?
+loader.isdir = (path) => {
+  return fs.lstatSync(path).isDirectory()
+}
 
-      // If it's a directory, it's a model
-      if (loader.isdir(path)) {
-        // Read directory
+// Get the environment version of a file
+loader.env = (path, ext = 'yml') => {
+  const mode = process.env.NODE_ENV || 'development'
+  return path.replace(`.${ext}`, `.${mode}.${ext}`)
+}
 
-        const models = loader.dir(path)
-
-        // Make room for model
-        config[f] = {}
-
-        // Read files
-        for (const m of models) {
-          // Extract name and extension, set path
-          const [name, ext] = m.split('.')
-          const path = `${base}/${f}/${m}`
-
-          // Read schema file
-          if (ext === 'yml') {
-            config[f][name] = loader.yaml(path)
-
-          // Read before filter
-          } else if(ext === 'js') {
-            config[f][name] = loader.file(path)
-          }
-        }
-      } else if (ext === 'yml') {
-        config[name] = loader.yaml(path)
-      }
+// Merge environment file into data
+loader.merge = (path, ext, data) => {
+  // Merge environment file
+  if (typeof data === 'object') {
+    const e = loader.env(path, ext)
+    if (loader.exist(e)) {
+      _.merge(data, loader.file(e))
     }
   }
-  return config
+}
+
+// Load config files
+loader.load = (path) => {
+  const config = {}
+  const build = (file, c) => {
+    const [ name, ext ] = loader.split(file)
+    if (loader.isdir(file)) {
+      c[name] = {}
+      const files = loader.dir(file)
+      for (const f of files) {
+        build(f, c[name])
+      }
+    } else {
+      c[name] = loader.file(file, ext)
+    }
+  }
+  build(loader.abs(path), config, true)
+
+  // Remove the root before return
+  return config[Object.keys(config)[0]]
 }
 
 module.exports = loader

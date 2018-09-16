@@ -20,16 +20,12 @@ describe('Config', () => {
     expect(typeof config.project.schema).toEqual('object')
   })
 
-  it('should have a before_all for project', () => {
-    expect(typeof config.project.before_all).toEqual('string')
+  it('should have a controller for project', () => {
+    expect(typeof config.project.controller).toEqual('string')
   })
 
-  it('should have a validate for project', () => {
-    expect(typeof config.project.validate).toEqual('string')
-  })
-
-  it('should have a after_all for project', () => {
-    expect(typeof config.project.after_all).toEqual('string')
+  it('should load json files', () => {
+    expect(config.data.hello).toEqual('world')
   })
 
   it('should merge environment files', () => {
