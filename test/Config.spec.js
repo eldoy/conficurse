@@ -1,4 +1,4 @@
-const conficurse = require('../conficurse')
+const conficurse = require('../index.js')
 const config = conficurse.load('config')
 
 describe('Config', () => {
@@ -30,5 +30,9 @@ describe('Config', () => {
 
   it('should have a after_all for project', () => {
     expect(typeof config.project.after_all).toEqual('string')
+  })
+
+  it('should merge environment files', () => {
+    expect(config.settings.pagination.results).toEqual(50)
   })
 })
