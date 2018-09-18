@@ -31,4 +31,9 @@ describe('Config', () => {
   it('should merge environment files', () => {
     expect(config.settings.pagination.results).toEqual(50)
   })
+
+  it('should give you a blank config if not found', () => {
+    const c = conficurse.load('scronfig')
+    expect(c).toBeUndefined()
+  })
 })

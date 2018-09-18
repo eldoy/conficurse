@@ -69,6 +69,9 @@ loader.merge = (path, ext, data) => {
 
 // Load config files
 loader.load = (path) => {
+  if (!loader.exist(path)) {
+    return undefined
+  }
   const config = {}
   const build = (file, c) => {
     const [ name, ext ] = loader.split(file)
@@ -81,8 +84,8 @@ loader.load = (path) => {
     } else {
       c[name] = loader.file(file, ext)
     }
-  }
-  build(loader.abs(path), config)
+  }  
+  build(loader.abs(path), config)  
 
   // Remove the root before return
   return config[Object.keys(config)[0]]
