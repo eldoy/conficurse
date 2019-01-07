@@ -2,6 +2,7 @@ const fs = require('fs')
 const p = require('path')
 const _ = require('lodash')
 const yaml = require('js-yaml')
+const srequire = require('require-from-string')
 const loader = {}
 
 // Get absolute path
@@ -84,11 +85,34 @@ loader.load = (path) => {
     } else {
       c[name] = loader.file(file, ext)
     }
-  }  
-  build(loader.abs(path), config)  
+  }
+  build(loader.abs(path), config)
 
   // Remove the root before return
   return config[Object.keys(config)[0]]
 }
+
+// Export files from string
+loader.export = (data) => {
+  if (typeof data === 'string') {
+    data = JSON.parse(data)
+  }
+  const traverse = (obj) => {
+    for (const k in obj) {
+      if (obj[k] && typeof obj[k] === 'object') {
+        traverse(obj[k])
+      } else {
+        // Try to export the string as module
+        // The string must contain 'module.exports'
+        if (/module\.exports/.test(obj[k])) {
+          obj[k] = srequire(obj[k])
+        }
+      }
+    }
+  }
+  traverse(data)
+  return data
+}
+
 
 module.exports = loader

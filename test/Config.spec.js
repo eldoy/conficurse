@@ -2,7 +2,6 @@ const conficurse = require('../index.js')
 const config = conficurse.load('config')
 
 describe('Config', () => {
-
   /**
   * CONFIG
   **/
@@ -35,5 +34,9 @@ describe('Config', () => {
   it('should give you a blank config if not found', () => {
     const c = conficurse.load('scronfig')
     expect(c).toBeUndefined()
+  })
+  it('should export js files to functions', () => {
+    const exp = conficurse.export(config)
+    expect(typeof exp.validations.project).toEqual('function')
   })
 })
