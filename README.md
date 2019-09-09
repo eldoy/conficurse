@@ -11,8 +11,11 @@ See the ```test/config``` directory for an example directory structure.
 ```javascript
 const loader = require('conficurse')
 
-// Path is relative to where you run the command
+// Path is the directory relative to where you run the command
 const config = loader.load('config')
+
+// Passing 'true' as second parameter merges the files
+const routes = loader.load('app/routes', true)
 
 // Export strings that contain 'module.exports'
 const exported = loader.export(config)

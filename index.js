@@ -74,7 +74,7 @@ loader.merge = (path, ext, data) => {
 }
 
 // Load config files
-loader.load = (path) => {
+loader.load = (path, merge = false) => {
   if (!loader.exist(path)) {
     return
   }
@@ -88,7 +88,12 @@ loader.load = (path) => {
         build(f, c[name])
       }
     } else {
-      c[name] = loader.file(file, ext)
+      const content = loader.file(file, ext)
+      if (merge) {
+        _.merge(c, content)
+      } else {
+        c[name] = content
+      }
     }
   }
   build(loader.abs(path), config)
