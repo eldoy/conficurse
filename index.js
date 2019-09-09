@@ -15,17 +15,6 @@ loader.split = (path) => {
   return p.basename(path).split('.')
 }
 
-// Load file
-loader.file = (path, ext = 'yml') => {
-  let data = loader.read(path)
-  switch (ext) {
-    case 'yml': data = loader.yaml(path); break
-    case 'json': data = JSON.parse(data)
-  }
-  loader.merge(path, ext, data)
-  return data
-}
-
 // Check if file exists
 loader.exist = (path) => {
   return path ? fs.existsSync(path) : false
@@ -51,19 +40,32 @@ loader.isdir = (path) => {
   return fs.lstatSync(path).isDirectory()
 }
 
+// Load file
+loader.file = (path, ext) => {
+  let data
+  if (ext === 'yml') {
+    data = loader.yaml(path)
+  } else if (['js', 'json'].includes(ext)) {
+    data = require(path)
+  } else {
+    data = loader.read(path)
+  }
+  loader.merge(path, ext, data)
+  return data
+}
+
 // Get the environment version of a file
-loader.env = (path, ext = 'yml') => {
+loader.env = (path, ext) => {
   const mode = process.env.NODE_ENV || 'development'
   return path.replace(`.${ext}`, `.${mode}.${ext}`)
 }
 
 // Merge environment file into data
 loader.merge = (path, ext, data) => {
-  // Merge environment file
   if (typeof data === 'object') {
-    const e = loader.env(path, ext)
-    if (loader.exist(e)) {
-      _.merge(data, loader.file(e))
+    const envpath = loader.env(path, ext)
+    if (loader.exist(envpath)) {
+      _.merge(data, loader.file(envpath, ext))
     }
   }
 }
@@ -71,11 +73,11 @@ loader.merge = (path, ext, data) => {
 // Load config files
 loader.load = (path) => {
   if (!loader.exist(path)) {
-    return undefined
+    return
   }
   const config = {}
   const build = (file, c) => {
-    const [ name, ext ] = loader.split(file)
+    const [name, ext] = loader.split(file)
     if (loader.isdir(file)) {
       c[name] = {}
       const files = loader.dir(file)
@@ -92,6 +94,11 @@ loader.load = (path) => {
   return config[Object.keys(config)[0]]
 }
 
+// Check if file has the 'module.exports' string
+loader.isexportable = (str) => {
+  return /module\.exports/.test(str)
+}
+
 // Export files from string
 loader.export = (data) => {
   if (typeof data === 'string') {
@@ -102,9 +109,7 @@ loader.export = (data) => {
       if (obj[k] && typeof obj[k] === 'object') {
         traverse(obj[k])
       } else {
-        // Try to export the string as module
-        // The string must contain 'module.exports'
-        if (/module\.exports/.test(obj[k])) {
+        if (loader.isexportable(obj[k])) {
           obj[k] = srequire(obj[k])
         }
       }
@@ -113,6 +118,5 @@ loader.export = (data) => {
   traverse(data)
   return data
 }
-
 
 module.exports = loader

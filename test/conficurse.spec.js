@@ -1,11 +1,7 @@
 const conficurse = require('../index.js')
-const config = conficurse.load('config')
+const config = conficurse.load('test/config')
 
-describe('Config', () => {
-  /**
-  * CONFIG
-  **/
-
+describe('conficurse', () => {
   it('should be an object when created', () => {
     expect(typeof config).toEqual('object')
   })
@@ -20,7 +16,8 @@ describe('Config', () => {
   })
 
   it('should have a controller for project', () => {
-    expect(typeof config.project.controller).toEqual('string')
+    expect(typeof config.project.controller).toEqual('object')
+    expect(typeof config.project.controller.beforeSave).toEqual('function')
   })
 
   it('should load json files', () => {
