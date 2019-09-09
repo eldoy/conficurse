@@ -1,7 +1,7 @@
 {
   "name": "conficurse",
-  "version": "0.0.4",
-  "description": "Recursively converts config files into Javascript objects",
+  "version": "0.0.5",
+  "description": "Recursively convert config files into Javascript objects",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -22,8 +22,5 @@
   },
   "devDependencies": {
     "jest": "~24.9.0"
-  },
-  "jest": {
-    "testURL": "http://localhost/"
   }
 }

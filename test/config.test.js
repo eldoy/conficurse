@@ -1,7 +1,7 @@
-const conficurse = require('../index.js')
-const config = conficurse.load('test/config')
+const loader = require('../index.js')
+const config = loader.load('test/config')
 
-describe('conficurse', () => {
+describe('config', () => {
   it('should be an object when created', () => {
     expect(typeof config).toEqual('object')
   })
@@ -29,11 +29,11 @@ describe('conficurse', () => {
   })
 
   it('should give you a blank config if not found', () => {
-    const c = conficurse.load('scronfig')
+    const c = loader.load('scronfig')
     expect(c).toBeUndefined()
   })
   it('should export js files to functions', () => {
-    const exp = conficurse.export(config)
+    const exp = loader.export(config)
     expect(typeof exp.validations.project).toEqual('function')
   })
 })
