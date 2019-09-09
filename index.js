@@ -3,6 +3,9 @@ const p = require('path')
 const _ = require('lodash')
 const yaml = require('js-yaml')
 const srequire = require('require-from-string')
+
+const NODE_EXTENSIONS = ['js', 'json', 'mjs', 'cjs', 'wasm', 'node']
+
 const loader = {}
 
 // Get absolute path
@@ -45,7 +48,7 @@ loader.file = (path, ext) => {
   let data
   if (ext === 'yml') {
     data = loader.yaml(path)
-  } else if (['js', 'json'].includes(ext)) {
+  } else if (NODE_EXTENSIONS.includes(ext)) {
     data = require(path)
   } else {
     data = loader.read(path)

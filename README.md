@@ -6,7 +6,7 @@ The conficurse library will load your config YAML, JSON and JS files as a Javasc
 ```npm i conficurse``` or ```yarn add conficurse```
 
 ### USAGE
-See the ```config``` directory for an example directory structure.
+See the ```test/config``` directory for an example directory structure.
 
 ```javascript
 const loader = require('conficurse')
@@ -16,7 +16,5 @@ const config = loader.load('config')
 
 // Export strings that contain 'module.exports'
 const exported = loader.export(config)
-
 ```
-
 MIT licensed. Enjoy!
