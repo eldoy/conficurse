@@ -35,7 +35,9 @@ loader.yaml = (path) => {
 
 // Read directory
 loader.dir = (path) => {
-  return fs.readdirSync(path).map(x => `${path}/${x}`)
+  return fs.readdirSync(path)
+    .sort((a, b) => (a.match(/^\d+/g) || a) - (b.match(/^\d+/g) || b))
+    .map(x => `${path}/${x}`)
 }
 
 // Is directory?

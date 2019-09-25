@@ -24,6 +24,11 @@ describe('config', () => {
     expect(config.data.hello).toEqual('world')
   })
 
+  it('should sort middleware properly', async () => {
+    const names = Object.keys(config.middleware)
+    expect(names).toEqual(['10-hello', '11-hello', '100-hello', 'cya'])
+  })
+
   it('should merge environment files', () => {
     expect(config.settings.pagination.results).toEqual(50)
   })
@@ -32,6 +37,7 @@ describe('config', () => {
     const c = loader.load('scronfig')
     expect(c).toBeUndefined()
   })
+
   it('should export js files to functions', () => {
     const exp = loader.export(config)
     expect(typeof exp.validations.project).toEqual('function')
