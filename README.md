@@ -14,8 +14,8 @@ const loader = require('conficurse')
 // Path is the directory relative to where you run the command
 const config = loader.load('config')
 
-// Passing 'true' as second parameter merges the files
-const routes = loader.load('app/routes', true)
+// Using the merge option merges the files
+const routes = loader.load('app/routes', { merge: true })
 
 // Export strings that contain 'module.exports'
 const exported = loader.export(config)

@@ -1,5 +1,5 @@
 const loader = require('../index.js')
-const routes = loader.load('test/app/routes', true)
+const routes = loader.load('test/app/routes', { merge: true })
 
 describe('merge', () => {
   it('should be an object when created', () => {

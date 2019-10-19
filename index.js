@@ -76,10 +76,8 @@ loader.merge = (path, ext, data) => {
 }
 
 // Load config files
-loader.load = (path, merge = false) => {
-  if (!loader.exist(path)) {
-    return
-  }
+loader.load = (path, options = {}) => {
+  if (!loader.exist(path)) return
   const config = {}
   const build = (file, c) => {
     const [name, ext] = loader.split(file)
@@ -91,7 +89,7 @@ loader.load = (path, merge = false) => {
       }
     } else {
       const content = loader.file(file, ext)
-      if (merge) {
+      if (options.merge) {
         _.merge(c, content)
       } else {
         c[name] = content
