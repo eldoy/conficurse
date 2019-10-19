@@ -79,9 +79,11 @@ loader.merge = (path, ext, data) => {
 loader.load = (path, options = {}) => {
   if (!loader.exist(path)) return
   const config = {}
+  let depth = 0
   const build = (file, c) => {
     const [name, ext] = loader.split(file)
     if (loader.isdir(file)) {
+      if (depth++ > options.depth) return
       c[name] = {}
       const files = loader.dir(file)
       for (const f of files) {

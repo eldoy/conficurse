@@ -17,6 +17,12 @@ const config = loader.load('config')
 // Using the merge option merges the files
 const routes = loader.load('app/routes', { merge: true })
 
+// Set depth of recursion
+const routes = loader.load('app/routes', { depth: 1 })
+
+// Set depth to 0 to not do recursion
+const routes = loader.load('app/routes', { depth: 0 })
+
 // Export strings that contain 'module.exports'
 const exported = loader.export(config)
 ```
