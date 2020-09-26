@@ -129,4 +129,21 @@ loader.export = (data) => {
   return data
 }
 
+// Directory tree as flat array
+loader.tree = (root) => {
+  const glob = (path, files) => {
+    fs.readdirSync(path).forEach((file) => {
+      const subpath = p.join(path, file)
+      if(fs.lstatSync(subpath).isDirectory()){
+        glob(subpath, files)
+      } else {
+        files.push(subpath)
+      }
+    })
+  }
+  const files = []
+  glob(loader.abs(root), files)
+  return files
+}
+
 module.exports = loader
