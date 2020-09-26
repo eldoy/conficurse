@@ -25,5 +25,8 @@ const routes = loader.load('app/routes', { depth: 0 })
 
 // Export strings that contain 'module.exports'
 const exported = loader.export(config)
+
+// Get directory tree as flat array
+const tree = loader.tree(root)
 ```
 MIT licensed. Enjoy!
