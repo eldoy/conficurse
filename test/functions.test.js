@@ -6,4 +6,10 @@ describe('functions', () => {
     expect(tree.length > 0).toBe(true)
     expect(Array.isArray(tree)).toBe(true)
   })
+
+  it('should give empty result if not exist', () => {
+    const tree = loader.tree('doesnotexist')
+    expect(tree.length === 0).toBe(true)
+    expect(Array.isArray(tree)).toBe(true)
+  })
 })

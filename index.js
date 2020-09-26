@@ -131,6 +131,8 @@ loader.export = (data) => {
 
 // Directory tree as flat array
 loader.tree = (root) => {
+  root = loader.abs(root)
+  if (!loader.exist(root)) return []  
   const glob = (path, files) => {
     fs.readdirSync(path).forEach((file) => {
       const subpath = p.join(path, file)
@@ -142,7 +144,7 @@ loader.tree = (root) => {
     })
   }
   const files = []
-  glob(loader.abs(root), files)
+  glob(root, files)
   return files
 }
 
