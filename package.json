@@ -16,6 +16,7 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "dependencies": {
+    "extras": "^0.1.2",
     "js-yaml": "^4.0.0",
     "lodash": "^4.17.20",
     "require-from-string": "^2.0.2"
