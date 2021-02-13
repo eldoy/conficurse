@@ -24,7 +24,7 @@ describe('config', () => {
     expect(config.data.hello).toEqual('world')
   })
 
-  it('should sort middleware properly', async () => {
+  it('should sort middleware by number', async () => {
     const names = Object.keys(config.middleware)
     expect(names).toEqual(['10-hello', '11-hello', '100-hello', 'cya'])
   })
@@ -35,11 +35,6 @@ describe('config', () => {
 
   it('should give you a blank config if not found', () => {
     const c = loader.load('scronfig')
-    expect(c).toBeUndefined()
-  })
-
-  it('should export js files to functions', () => {
-    const exp = loader.export(config)
-    expect(typeof exp.validations.project).toEqual('function')
+    expect(c).toEqual({})
   })
 })

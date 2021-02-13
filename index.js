@@ -1,93 +1,44 @@
 const _ = require('lodash')
+const path = require('path')
 const extras = require('extras')
-const srequire = require('require-from-string')
-
-const NODE_EXTENSIONS = ['js', 'json', 'mjs', 'cjs', 'wasm', 'node']
-
 const loader = {}
 
-// Load file
-loader.file = (path, ext) => {
-  let data
-  if (ext === 'yml') {
-    data = extras.yaml(path)
-  } else if (NODE_EXTENSIONS.includes(ext)) {
-    data = require(path)
-  } else {
-    data = extras.read(path)
-  }
-  loader.merge(path, ext, data)
-  return data
+// Sort by number in file name
+function byFileName(a, b) {
+  const [b1, x1] = extras.name(a)
+  const [b2, x2] = extras.name(b)
+  return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
-// Get the environment version of a file
-loader.env = (path, ext) => {
-  const mode = process.env.NODE_ENV || 'development'
-  return path.replace(`.${ext}`, `.${mode}.${ext}`)
-}
-
-// Merge environment file into data
-loader.merge = (path, ext, data) => {
-  if (typeof data === 'object') {
-    const envpath = loader.env(path, ext)
-    if (extras.exist(envpath)) {
-      _.merge(data, loader.file(envpath, ext))
-    }
-  }
-}
-
-// Load config files
-loader.load = (path, options = {}) => {
-  if (!extras.exist(path)) return
+loader.load = function(dir) {
   const config = {}
-  let depth = 0
-  const build = (file, c) => {
-    const [name, ext] = extras.split(file)
-    if (extras.isDir(file)) {
-      if (depth++ > options.depth) return
-      c[name] = {}
-      const files = extras.dir(file)
-      for (const f of files) {
-        build(f, c[name])
-      }
-    } else {
-      const content = loader.file(file, ext)
-      if (options.merge) {
-        _.merge(c, content)
-      } else {
-        c[name] = content
+  const root = process.cwd()
+  const mode = process.env.NODE_ENV || 'development'
+  const tree = extras.tree(dir).sort(byFileName)
+
+  for (const file of tree) {
+    const content = extras.read(file)
+    const [base, ext] = extras.name(file)
+
+    // Merge environment file content
+    if (_.isPlainObject(content)) {
+      const name = file.replace(`.${ext}`, `.${mode}.${ext}`)
+      const item = tree.find(f => f === name)
+      if (item) {
+        _.merge(content, extras.read(item))
       }
     }
-  }
-  build(extras.abs(path), config)
 
-  // Remove the root before return
-  return config[Object.keys(config)[0]]
-}
+    const trail = file
+      .replace(path.join(root, dir), '')
+      .split(path.sep)
+      .slice(1, -1)
+      .concat(base)
+      .join('.')
 
-// Check if file has the 'module.exports' string
-loader.isexportable = (str) => {
-  return /module\.exports/.test(str)
-}
-
-// Export files from string
-loader.export = (data) => {
-  if (typeof data === 'string') {
-    data = JSON.parse(data)
+    _.set(config, trail, content)
   }
-  const traverse = (obj) => {
-    for (const k in obj) {
-      if (obj[k] && typeof obj[k] === 'object') {
-        traverse(obj[k])
-      } else {
-        if (loader.isexportable(obj[k])) {
-          obj[k] = srequire(obj[k])
-        }
-      }
-    }
-  }
-  traverse(data)
-  return data
+  return config
 }
 
 module.exports = loader
