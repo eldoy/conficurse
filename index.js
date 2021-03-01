@@ -12,7 +12,7 @@ function byFileName(a, b) {
 
 loader.load = function(dir, fn) {
   const config = {}
-  const root = process.cwd()
+  const root = dir.startsWith(path.sep) ? '' : process.cwd()
   const mode = process.env.NODE_ENV || 'development'
   const files = tree(dir).sort(byFileName)
 

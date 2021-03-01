@@ -1,3 +1,4 @@
+const path = require('path')
 const loader = require('../index.js')
 const config = loader.load('test/config')
 
@@ -36,5 +37,11 @@ describe('config', () => {
   it('should give you a blank config if not found', () => {
     const c = loader.load('scronfig')
     expect(c).toEqual({})
+  })
+
+  it('should work with absolute path', async () => {
+    const dir = path.join(process.cwd(), 'test', 'config')
+    const config = loader.load(dir)
+    expect(typeof config.project.controller).toEqual('object')
   })
 })
