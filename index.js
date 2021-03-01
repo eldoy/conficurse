@@ -1,12 +1,12 @@
 const _ = require('lodash')
 const path = require('path')
-const extras = require('extras')
+const { basext, tree, read } = require('extras')
 const loader = {}
 
 // Sort by number in file name
 function byFileName(a, b) {
-  const [b1, x1] = extras.name(a)
-  const [b2, x2] = extras.name(b)
+  const [b1, x1] = basext(a)
+  const [b2, x2] = basext(b)
   return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
@@ -14,18 +14,18 @@ loader.load = function(dir, fn) {
   const config = {}
   const root = process.cwd()
   const mode = process.env.NODE_ENV || 'development'
-  const tree = extras.tree(dir).sort(byFileName)
+  const files = tree(dir).sort(byFileName)
 
-  for (const file of tree) {
-    let content = extras.read(file)
-    const [base, ext] = extras.name(file)
+  for (const file of files) {
+    let content = read(file)
+    const [base, ext] = basext(file)
 
     // Merge environment file content
     if (_.isPlainObject(content)) {
       const name = file.replace(`.${ext}`, `.${mode}.${ext}`)
-      const item = tree.find(f => f === name)
+      const item = files.find(f => f === name)
       if (item) {
-        _.merge(content, extras.read(item))
+        _.merge(content, read(item))
       }
     }
 
