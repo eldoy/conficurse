@@ -17,4 +17,15 @@ describe('app', () => {
   it('should load emails', async () => {
     expect(typeof app.emails['reset-email']).toBe('function')
   })
+
+  it('should support a transform callback', async () => {
+    const app2 = loader.load('test/app', function({ file, content }) {
+      if (file.endsWith('txt')) {
+        return 'Bye'
+      }
+      return content
+    })
+
+    expect(app2.pages.hello).toBe('Bye')
+  })
 })

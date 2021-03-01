@@ -10,14 +10,14 @@ function byFileName(a, b) {
   return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
-loader.load = function(dir) {
+loader.load = function(dir, fn) {
   const config = {}
   const root = process.cwd()
   const mode = process.env.NODE_ENV || 'development'
   const tree = extras.tree(dir).sort(byFileName)
 
   for (const file of tree) {
-    const content = extras.read(file)
+    let content = extras.read(file)
     const [base, ext] = extras.name(file)
 
     // Merge environment file content
@@ -35,6 +35,10 @@ loader.load = function(dir) {
       .slice(1, -1)
       .concat(base)
       .join('.')
+
+    if (typeof fn == 'function') {
+      content = fn({ mode, dir, file, base, ext, trail, content })
+    }
 
     _.set(config, trail, content)
   }
