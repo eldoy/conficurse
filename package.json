@@ -1,7 +1,7 @@
 {
   "name": "conficurse",
   "version": "0.3.2",
-  "description": "Recursively convert config files into Javascript objects",
+  "description": "Convert config files into Javascript objects",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -16,8 +16,8 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "dependencies": {
-    "extras": "^0.4.5",
-    "lodash": "^4.17.20"
+    "extras": "^0.5.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "jest": "~26.6.3"
