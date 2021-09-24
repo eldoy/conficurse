@@ -34,6 +34,7 @@ loader.load = function(dir, fn) {
       .split(path.sep)
       .slice(1, -1)
       .concat(base)
+      .map(x => x.includes('.') ? `['${x}']` : x)
       .join('.')
 
     if (typeof fn == 'function') {
