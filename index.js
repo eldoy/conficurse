@@ -10,6 +10,13 @@ function byFileName(a, b) {
   return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
+// Merge arrays
+function customizer(obj, src) {
+  if (_.isArray(obj)) {
+    return obj.concat(src)
+  }
+}
+
 loader.load = function(dir, fn) {
   const config = {}
   const root = dir.startsWith(path.sep) ? '' : process.cwd()
@@ -21,11 +28,12 @@ loader.load = function(dir, fn) {
     const [base, ext] = basext(file)
 
     // Merge environment file content
-    if (_.isPlainObject(content)) {
+    if (typeof content == 'object') {
       const name = file.replace(`.${ext}`, `.${mode}.${ext}`)
-      const item = files.find(f => f === name)
+      const item = files.find(f => f == name)
       if (item) {
-        _.merge(content, read(item))
+        const data = read(item)
+        _.mergeWith(content, data, customizer)
       }
     }
 

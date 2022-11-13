@@ -1,0 +1,4 @@
+- name: plus
+  price: 10
+- name: pro
+  price: 20

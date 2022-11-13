@@ -34,6 +34,12 @@ describe('config', () => {
     expect(config.settings.pagination.results).toEqual(50)
   })
 
+  it('should merge array environment files', () => {
+    expect(config.products.length).toEqual(2)
+    expect(config.products[0].price).toEqual(40)
+    expect(config.products[1].price).toEqual(20)
+  })
+
   it('should give you a blank config if not found', () => {
     const c = loader.load('scronfig')
     expect(c).toEqual({})
