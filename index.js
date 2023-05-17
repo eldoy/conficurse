@@ -32,7 +32,9 @@ loader.load = function (dir, fn) {
       content = fn({ mode, dir, file, base, ext, trail, content })
     }
 
-    _.set(config, trail, content)
+    if (trail) {
+      _.set(config, trail, content)
+    }
   }
   return config
 }

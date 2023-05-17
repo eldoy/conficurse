@@ -45,6 +45,10 @@ describe('config', () => {
     expect(c).toEqual({})
   })
 
+  it('should load files starting with dot', () => {
+    expect(config['']).toBeUndefined()
+  })
+
   it('should work with absolute path', async () => {
     const dir = path.join(process.cwd(), 'test', 'config')
     const config = loader.load(dir)
