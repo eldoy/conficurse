@@ -1,26 +1,25 @@
-const lodash = require('lodash')
-const path = require('path')
-const { basext, tree, env } = require('extras')
-const loader = {}
+var lodash = require('lodash')
+var path = require('path')
+var { basext, tree, env } = require('extras')
 
 // Sort by number in file name
 function byFileName(a, b) {
-  const [b1, x1] = basext(a)
-  const [b2, x2] = basext(b)
+  var [b1, x1] = basext(a)
+  var [b2, x2] = basext(b)
   return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
-loader.load = function (dir, fn) {
-  const config = {}
-  const root = dir.startsWith(path.sep) ? '' : process.cwd()
-  const mode = process.env.NODE_ENV || 'development'
-  const files = tree(dir).sort(byFileName)
+function load(dir, fn) {
+  var config = {}
+  var root = dir.startsWith(path.sep) ? '' : process.cwd()
+  var mode = process.env.NODE_ENV || 'development'
+  var files = tree(dir).sort(byFileName)
 
-  for (const file of files) {
+  for (var file of files) {
     let content = env(file, mode)
-    const [base, ext] = basext(file)
+    var [base, ext] = basext(file)
 
-    const trail = file
+    var trail = file
       .replace(path.join(root, dir), '')
       .split(path.sep)
       .slice(1, -1)
@@ -39,4 +38,4 @@ loader.load = function (dir, fn) {
   return config
 }
 
-module.exports = loader
+module.exports = { load }
