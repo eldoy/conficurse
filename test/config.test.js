@@ -34,6 +34,11 @@ describe('config', () => {
     expect(config.settings.pagination.results).toEqual(50)
   })
 
+  it('should keep environments', () => {
+    expect(config['settings.test'].pagination.results).toEqual(50)
+    expect(config['settings.production'].pagination.results).toEqual(99)
+  })
+
   it('should merge array environment files', () => {
     expect(config.products.length).toEqual(2)
     expect(config.products[0].price).toEqual(40)
