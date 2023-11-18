@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const lodash = require('lodash')
 const path = require('path')
 const { basext, tree, env } = require('extras')
 const loader = {}
@@ -33,7 +33,7 @@ loader.load = function (dir, fn) {
     }
 
     if (trail) {
-      _.set(config, trail, content)
+      lodash.set(config, trail, content)
     }
   }
   return config
