@@ -30,8 +30,8 @@ var pages = loader.load('app/pages', { lazy: true }, function({ content }) {
   return html6(content)
 })
 
-// Load files async
-var pages = loader.loadAsync('app/pages')
+// Load files async using promises
+var pages = await loader.loadAsync('app/pages')
 
 // Change content on load
 var config = loader.load('config', function({
