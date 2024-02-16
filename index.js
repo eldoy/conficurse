@@ -93,4 +93,12 @@ function load(dir, opt, fn) {
   return config
 }
 
-module.exports = { load }
+function loadAsync(dir, opt, fn) {
+  var promises = []
+
+  return new Promise(function (r) {
+    r(load(dir, opt, fn))
+  })
+}
+
+module.exports = { load, loadAsync }

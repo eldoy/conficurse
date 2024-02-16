@@ -7,6 +7,7 @@ Extra features:
 - Env support, merges files automatically based on your current environment
 - Supports callback function for changing file content before require
 - Can lazy load modules using Javascript Proxies
+- You can load your files async using promises
 
 ### Install
 ```npm i conficurse```
@@ -28,6 +29,9 @@ var pages = loader.load('app/pages', { lazy: true })
 var pages = loader.load('app/pages', { lazy: true }, function({ content }) {
   return html6(content)
 })
+
+// Load files async
+var pages = loader.loadAsync('app/pages')
 
 // Change content on load
 var config = loader.load('config', function({
