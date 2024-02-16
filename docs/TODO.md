@@ -1,3 +1,1 @@
-- [ ] Test for option lazy
-- [ ] Env file merge function
 - [ ] Add support for async: await loadAsync()

@@ -37,3 +37,12 @@ it('should support a transform callback', async ({ t }) => {
   })
   t.ok(app2.pages.hello == 'Bye')
 })
+
+it('should support lazy loading', async ({ t }) => {
+  var app2 = loader.load('spec/app', { lazy: true })
+  t.ok(typeof app2.pages.hello == 'string')
+  t.ok(app2.pages.hello == 'Hello')
+
+  t.ok(typeof app2.pages.contact == 'function')
+  t.ok((await app2.pages.contact()) == 'contact')
+})

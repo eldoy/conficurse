@@ -4,7 +4,7 @@ var { addHook } = require('pirates')
 
 var { tree, basext, env } = require('extras')
 
-var NODE_EXTENSIONS = ['js', 'json', 'mjs', 'cjs', 'wasm', 'node']
+var LAZYLOADABLE = ['js', 'json', 'mjs', 'cjs', 'wasm', 'node']
 
 function lazy(val, path, mode, fn, props) {
   if (typeof val != 'undefined') {
@@ -12,7 +12,7 @@ function lazy(val, path, mode, fn, props) {
   }
 
   function hook(content, name) {
-    if (fn) {
+    if (typeof fn == 'function') {
       content = fn({ ...props, content })
     }
     return content
@@ -77,7 +77,7 @@ function load(dir, opt, fn) {
 
     var props = { mode, dir, file, base, ext, trail }
     var content
-    if (opt.lazy && NODE_EXTENSIONS.includes(ext)) {
+    if (opt.lazy && LAZYLOADABLE.includes(ext)) {
       content = lazyload(file, mode, fn, props)
     } else {
       content = env(file, mode)
