@@ -7,16 +7,16 @@ it('should be an object when created', ({ t }) => {
 })
 
 it('should have a config', ({ t }) => {
-  t.ok(typeof config.settings == 'function')
+  t.ok(typeof config.settings == 'object')
   t.ok(config.settings.access.identifier == 'email')
 })
 
 it('should have a schema for project', ({ t }) => {
-  t.ok(typeof config.project.schema == 'function')
+  t.ok(typeof config.project.schema == 'object')
 })
 
 it('should have a controller for project', ({ t }) => {
-  t.ok(typeof config.project.controller == 'function')
+  t.ok(typeof config.project.controller == 'object')
   t.ok(typeof config.project.controller.beforeSave == 'function')
 })
 
@@ -56,5 +56,5 @@ it('should load files starting with dot', ({ t }) => {
 it('should work with absolute path', async ({ t }) => {
   var dir = path.join(process.cwd(), 'spec', 'config')
   var config = loader.load(dir)
-  t.ok(typeof config.project.controller == 'function')
+  t.ok(typeof config.project.controller == 'object')
 })

@@ -1,5 +1,3 @@
-- [ ] Add support for callback before requiring the file
-  - use pirates
-  - only for '.js' files
-
+- [ ] Test for option lazy
+- [ ] Env file merge function
 - [ ] Add support for async: await loadAsync()
