@@ -1,6 +1,73 @@
-var lodash = require('lodash')
 var path = require('path')
-var { basext, tree, env } = require('extras')
+var lodash = require('lodash')
+var { addHook } = require('pirates')
+
+var { tree, basext, env } = require('extras')
+
+var exts = ['.js']
+
+function primitive(val) {
+  return typeof val != 'object' && typeof val != 'function'
+}
+
+function lazy(val, path, mode) {
+  if (typeof val != 'undefined') {
+    return val
+  }
+
+  // var removeHook = addHook(
+  //   function (content, name) {
+  //     console.log('HOOKING', name)
+  //     console.log(content)
+
+  //     // Callback here
+
+  //     if (fn) {
+  //       content = fn({ ...props, content })
+  //     }
+
+  //     return content
+  //   },
+  //   { exts }
+  // )
+
+  var content = env(path, mode)
+  // console.log(content)
+
+  // if (typeof fn == 'function') {
+  //   props.content = content
+  //   content = fn(props)
+  // }
+
+  // if (fn && !exts.includes(`.${props.ext}`)) {
+  //   content = fn({ ...props, content })
+  // }
+
+  // removeHook()
+
+  // Callback here if not js
+
+  return content
+}
+
+function lazyload(path, mode) {
+  var val
+  var handler = {
+    get: (target, key) => {
+      val = lazy(val, path, mode)
+      return Reflect.get(val, key)
+    },
+    apply: (target, self, args) => {
+      val = lazy(val, path, mode)
+      return Reflect.apply(val, self, args)
+    },
+    construct: (target, args) => {
+      val = lazy(val, path, mode)
+      return Reflect.construct(val, args)
+    }
+  }
+  return new Proxy(function () {}, handler)
+}
 
 // Sort by number in file name
 function byFileName(a, b) {
@@ -9,14 +76,20 @@ function byFileName(a, b) {
   return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
-function load(dir, fn) {
+function load(dir, opt, fn) {
+  if (typeof opt == 'function') {
+    fn = opt
+    opt = {}
+  }
+  if (!opt) {
+    opt = {}
+  }
   var config = {}
   var root = dir.startsWith(path.sep) ? '' : process.cwd()
   var mode = process.env.NODE_ENV || 'development'
   var files = tree(dir).sort(byFileName)
 
   for (var file of files) {
-    let content = env(file, mode)
     var [base, ext] = basext(file)
 
     var trail = file
@@ -27,8 +100,11 @@ function load(dir, fn) {
       .map((x) => (x.includes('.') ? `['${x}']` : x))
       .join('.')
 
+    var content = lazyload(file, mode)
+    var props = { mode, dir, file, base, ext, trail, content }
+
     if (typeof fn == 'function') {
-      content = fn({ mode, dir, file, base, ext, trail, content })
+      content = fn(props)
     }
 
     if (trail) {

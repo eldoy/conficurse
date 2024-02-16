@@ -11,15 +11,16 @@
     "url": "https://github.com/eldoy/conficurse.git"
   },
   "scripts": {
-    "test": "jest --watch"
+    "test": "nodemon -q --exec spekk"
   },
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "dependencies": {
     "extras": "^0.12.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "pirates": "^4.0.6"
   },
   "devDependencies": {
-    "jest": "~29.7.0"
+    "spekk": "^0.2.2"
   }
 }
