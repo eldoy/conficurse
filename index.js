@@ -41,12 +41,9 @@ function getContent(file, props, opt) {
   }
 
   if (opt.lazy) {
-    content = lazyload(file)
-  } else {
-    content = requireFile(file, props, opt)
+    return lazyload(file)
   }
-
-  return content
+  return requireFile(file, props, opt)
 }
 
 function load(dir, opt = {}) {
