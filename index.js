@@ -23,7 +23,7 @@ function requireFile(file, props, opt) {
 }
 
 function getContent(file, props, opt) {
-  function lazy(val, path) {
+  function lazy(val) {
     if (typeof val != 'undefined') {
       return val
     }
@@ -34,7 +34,7 @@ function getContent(file, props, opt) {
     var val
     return new Proxy(function () {}, {
       apply: function (target, self, args) {
-        val = lazy(val, path)
+        val = lazy(val)
         return Reflect.apply(val, self, args)
       }
     })
