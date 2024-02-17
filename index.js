@@ -13,13 +13,11 @@ function byFileName(a, b) {
 
 function requireFile(file, props, opt) {
   if (typeof opt.onrequire == 'function') {
-    content = fs.readFileSync(file, 'utf8')
+    var content = fs.readFileSync(file, 'utf8')
     content = opt.onrequire({ ...props, content })
-    content = requireFromString(content, file)
-  } else {
-    content = require(file)
+    return requireFromString(content, file)
   }
-  return content
+  return require(file)
 }
 
 function getContent(file, props, opt) {
