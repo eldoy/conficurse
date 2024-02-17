@@ -18,7 +18,7 @@
   "dependencies": {
     "extras": "^0.12.1",
     "lodash": "^4.17.21",
-    "pirates": "^4.0.6"
+    "require-from-string": "^2.0.2"
   },
   "devDependencies": {
     "spekk": "^0.2.2"

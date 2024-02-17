@@ -3,11 +3,49 @@ var fs = require('node:fs')
 var lodash = require('lodash')
 var requireFromString = require('require-from-string')
 
-var { lazyload, byFileName } = require('./lib/util.js')
-
 var { tree, basext, env, read } = require('extras')
 
-var NODE_EXTENSIONS = ['js', 'json', 'mjs', 'cjs', 'wasm', 'node']
+function byFileName(a, b) {
+  var [b1, x1] = basext(a)
+  var [b2, x2] = basext(b)
+  return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
+}
+
+function requireFile(file, props, opt) {
+  if (typeof opt.onrequire == 'function') {
+    content = fs.readFileSync(file, 'utf8')
+    content = opt.onrequire({ ...props, content })
+    content = requireFromString(content, file)
+  } else {
+    content = require(file)
+  }
+  return content
+}
+
+function getContent(file, props, opt) {
+  function lazy(val, path) {
+    if (typeof val != 'undefined') {
+      return val
+    }
+    return requireFile(file, props, opt)
+  }
+
+  function lazyload(path) {
+    var val
+    return new Proxy(function () {}, {
+      apply: function (target, self, args) {
+        val = lazy(val, path)
+        return Reflect.apply(val, self, args)
+      }
+    })
+  }
+  if (opt.lazy) {
+    content = lazyload(file)
+  } else {
+    content = requireFile(file, props, opt)
+  }
+  return content
+}
 
 function load(dir, opt = {}) {
   if (typeof opt == 'function') {
@@ -33,10 +71,8 @@ function load(dir, opt = {}) {
     var props = { mode, dir, file, base, ext, trail }
     var content
 
-    if (ext == 'js' && typeof opt.onrequire == 'function') {
-      content = fs.readFileSync(file, 'utf8')
-      content = opt.onrequire({ ...props, content })
-      content = requireFromString(content, file)
+    if (ext == 'js') {
+      content = getContent(file, props, opt)
     } else {
       content = env(file, mode)
     }
