@@ -66,6 +66,7 @@ function load(dir, opt, fn) {
 
   for (var file of files) {
     var [base, ext] = basext(file)
+    if (!base) continue
 
     var trail = file
       .replace(path.join(root, dir), '')
