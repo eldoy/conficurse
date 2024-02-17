@@ -1,6 +1,6 @@
 {
   "name": "conficurse",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Convert config files into Javascript objects",
   "main": "index.js",
   "directories": {
