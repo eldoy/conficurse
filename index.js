@@ -55,7 +55,7 @@ function load(dir, opt = {}) {
   }
   var config = {}
   var root = dir.startsWith(path.sep) ? '' : process.cwd()
-  var mode = process.env.NODE_ENV || 'development'
+  var mode = opt.mode || process.env.NODE_ENV || 'development'
   var files = tree(dir).sort(byFileName)
 
   for (var file of files) {
