@@ -3,18 +3,11 @@ var lodash = require('lodash')
 
 var { lazyload, byFileName } = require('./lib/util.js')
 
-var { tree, basext, env } = require('extras')
+var { tree, basext, env, read } = require('extras')
 
 var LAZYLOADABLE = ['js', 'json', 'mjs', 'cjs', 'wasm', 'node']
 
-function load(dir, opt, fn) {
-  if (typeof opt == 'function') {
-    fn = opt
-    opt = {}
-  }
-  if (!opt) {
-    opt = {}
-  }
+function load(dir, opt = {}) {
   var config = {}
   var root = dir.startsWith(path.sep) ? '' : process.cwd()
   var mode = process.env.NODE_ENV || 'development'
@@ -34,13 +27,10 @@ function load(dir, opt, fn) {
 
     var props = { mode, dir, file, base, ext, trail }
     var content
-    if (opt.lazy && LAZYLOADABLE.includes(ext)) {
-      content = lazyload(file, mode, fn, props)
-    } else {
-      content = env(file, mode)
-      if (typeof fn == 'function') {
-        content = fn({ ...props, content })
-      }
+
+    content = env(file, mode)
+    if (typeof opt.onload == 'function') {
+      content = opt.onload({ ...props, content })
     }
 
     if (trail) {

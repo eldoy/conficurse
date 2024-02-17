@@ -30,11 +30,13 @@ it('should load pages with dot in name', async ({ t }) => {
 })
 
 it('should support a transform callback', async ({ t }) => {
-  var app2 = loader.load('spec/app', function ({ file, content }) {
-    if (file.endsWith('txt')) {
-      return 'Bye'
+  var app2 = loader.load('spec/app', {
+    onload: function ({ file, content }) {
+      if (file.endsWith('txt')) {
+        return 'Bye'
+      }
+      return content
     }
-    return content
   })
   t.ok(app2.pages.hello == 'Bye')
 })
