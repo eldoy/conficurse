@@ -2,12 +2,12 @@
 
 The conficurse library will load your config YAML, JSON and JS files as a Javascript object. This is great for huge configuration file hierarchies or applications with deep structures.
 
-**Awesome features:**
+*Awesome features:*
 
 - Env support, merges files automatically based on your current environment
-- Supports callback function for changing file content before require
+- Supports callback functions for modifying file content before and after load
 - Can lazy load modules using Javascript proxy objects
-- You can load your files async using promises
+- You can load your files async in parallel using promises
 
 ### Install
 ```npm i conficurse```
