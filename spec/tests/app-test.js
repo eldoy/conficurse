@@ -29,7 +29,7 @@ it('should load pages with dot in name', async ({ t }) => {
   t.ok(typeof app.pages['sitemap.xml'] == 'function')
 })
 
-it('should support a transform callback', async ({ t }) => {
+it('should support an onload callback', async ({ t }) => {
   var app2 = loader.load('spec/app', {
     onload: function ({ file, content }) {
       if (file.endsWith('txt')) {
@@ -41,13 +41,13 @@ it('should support a transform callback', async ({ t }) => {
   t.ok(app2.pages.hello == 'Bye')
 })
 
-it('should support lazy loading', async ({ t }) => {
-  var app2 = loader.load('spec/app', { lazy: true })
-  t.ok(typeof app2.pages.hello == 'string')
-  t.ok(app2.pages.hello == 'Hello')
-
-  t.ok(typeof app2.pages.contact == 'function')
-  t.ok((await app2.pages.contact()) == 'contact')
+it('should support an onrequire callback', async ({ t }) => {
+  var app2 = loader.load('spec/app', {
+    onrequire: function ({ file, content }) {
+      return content.replace('@@', 'hello')
+    }
+  })
+  t.ok(app2.pages.transform() == 'hello')
 })
 
 it('should support async loading', async ({ t }) => {
