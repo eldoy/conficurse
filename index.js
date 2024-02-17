@@ -39,11 +39,13 @@ function getContent(file, props, opt) {
       }
     })
   }
+
   if (opt.lazy) {
     content = lazyload(file)
   } else {
     content = requireFile(file, props, opt)
   }
+
   return content
 }
 
@@ -89,9 +91,9 @@ function load(dir, opt = {}) {
   return config
 }
 
-function loadAsync(dir, opt, fn) {
+function loadAsync(dir, opt) {
   return new Promise(function (r) {
-    r(load(dir, opt, fn))
+    r(load(dir, opt))
   })
 }
 
