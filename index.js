@@ -44,10 +44,7 @@ function getContent(file, props, opt) {
   return requireFile(file, props, opt)
 }
 
-function load(dir, opt = {}) {
-  if (typeof opt == 'function') {
-    opt = { onload: opt }
-  }
+function getConfig(dir, opt) {
   var config = {}
   var root = dir.startsWith(path.sep) ? '' : process.cwd()
   var mode = opt.mode || process.env.NODE_ENV || 'development'
@@ -86,10 +83,21 @@ function load(dir, opt = {}) {
   return config
 }
 
-function loadAsync(dir, opt) {
-  return new Promise(function (r) {
-    r(load(dir, opt))
-  })
+function load(dir, opt = {}) {
+  if (typeof opt == 'function') {
+    opt = { onload: opt }
+  }
+  if (opt.async) {
+    return new Promise(function (r) {
+      r(getConfig(dir, opt))
+    })
+  }
+  return getConfig(dir, opt)
+}
+
+function loadAsync(dir, opt = {}) {
+  opt.async = true
+  return load(dir, opt)
 }
 
 module.exports = { load, loadAsync }

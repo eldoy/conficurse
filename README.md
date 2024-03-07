@@ -26,6 +26,9 @@ var config = loader.load('config')
 var pages = loader.load('app/pages', { lazy: true })
 
 // Load files async using promises, can be used with Promise.all
+var pages = await loader.load('app/pages', { async: true })
+
+// We also have this convenience function
 var pages = await loader.loadAsync('app/pages')
 
 // Change content on load

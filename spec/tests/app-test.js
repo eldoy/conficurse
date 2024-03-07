@@ -60,6 +60,15 @@ it('should support lazy loading', async ({ t }) => {
 })
 
 it('should support async loading', async ({ t }) => {
+  var app2 = await loader.load('spec/app', { async: true })
+  t.ok(typeof app2.pages.hello == 'string')
+  t.ok(app2.pages.hello == 'Hello')
+
+  t.ok(typeof app2.pages.contact == 'function')
+  t.ok((await app2.pages.contact()) == 'contact')
+})
+
+it('should support async loading with convenience', async ({ t }) => {
   var app2 = await loader.loadAsync('spec/app')
   t.ok(typeof app2.pages.hello == 'string')
   t.ok(app2.pages.hello == 'Hello')
