@@ -16,7 +16,7 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "dependencies": {
-    "extras": "^0.12.1",
+    "extras": "^0.13.5",
     "lodash": "^4.17.21",
     "require-from-string": "^2.0.2"
   },
