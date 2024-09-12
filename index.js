@@ -1,13 +1,11 @@
 var path = require('node:path')
 var fs = require('node:fs')
-var lodash = require('lodash')
 var requireFromString = require('require-from-string')
-
-var { tree, basext, env, read } = require('extras')
+var extras = require('extras')
 
 function byFileName(a, b) {
-  var [b1, x1] = basext(a)
-  var [b2, x2] = basext(b)
+  var [b1, x1] = extras.basext(a)
+  var [b2, x2] = extras.basext(b)
   return (b1.match(/^\d+/g) || b1) - (b2.match(/^\d+/g) || b2)
 }
 
@@ -48,10 +46,10 @@ function getConfig(dir, opt) {
   var config = {}
   var root = dir.startsWith(path.sep) ? '' : process.cwd()
   var mode = opt.mode || process.env.NODE_ENV || 'development'
-  var files = tree(dir).sort(byFileName)
+  var files = extras.tree(dir).sort(byFileName)
 
   for (var file of files) {
-    var [base, ext] = basext(file)
+    var [base, ext] = extras.basext(file)
     if (!base) continue
 
     var trail = file
@@ -68,7 +66,7 @@ function getConfig(dir, opt) {
     if (ext == 'js') {
       content = getContent(file, props, opt)
     } else {
-      content = env(file, mode)
+      content = extras.env(file, mode)
     }
 
     if (typeof opt.onload == 'function') {
@@ -76,7 +74,7 @@ function getConfig(dir, opt) {
     }
 
     if (trail) {
-      lodash.set(config, trail, content)
+      extras.set(config, trail, content)
     }
   }
 
